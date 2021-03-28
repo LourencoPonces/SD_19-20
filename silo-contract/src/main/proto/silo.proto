@@ -1,0 +1,155 @@
+//
+// Protocol buffers definition for Silo server
+//
+syntax = "proto3";
+package pt.tecnico.sauron.silo.grpc;
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+
+
+//Cam Join
+message CamJoinRequest {
+    string cameraName = 1;
+    Coordinates coordinates = 2;
+}
+
+message CamJoinResponse {
+    //should be empty
+}
+
+
+//Cam Info
+message CamInfoRequest {
+    string cameraName = 1;
+}
+
+message CamInfoResponse {
+    Coordinates coordinates = 1;
+}
+
+//Report
+message ReportRequest {
+    string cameraName= 1;
+    message EyeObservation {
+        string type = 1;
+        string id = 2;
+    }
+    repeated EyeObservation eyeObservations = 2;
+}
+
+message ReportResponse {
+    //should be empty
+}
+
+//Track
+message TrackRequest {
+    string type = 1;
+    string id = 2;
+}
+
+message TrackResponse {
+    SpotterObservation spotterObservations = 1;
+    repeated int32 vectorClock = 2;
+    bool isEmpty = 3;
+}
+
+
+//Track Match
+message TrackMatchRequest {
+    string type = 1;
+    string id = 2;
+}
+
+
+message TrackMatchResponse {
+    repeated SpotterObservation spotterObservations = 1;
+    repeated int32 vectorClock = 2;
+}
+
+//Trace
+message TraceRequest {
+    string type = 1;
+    string id = 2;
+}
+
+message TraceResponse {
+    repeated SpotterObservation spotterObservations = 1;
+    repeated int32 vectorClock = 2;
+}
+
+//Clear
+message ClearRequest {
+    //should be empty
+}
+
+message ClearResponse {
+    //should be empty
+}
+
+
+//Init
+message InitRequest {
+    //should be empty
+}
+
+message InitResponse {
+    //should be empty
+}
+
+//Ping
+message PingRequest {
+    string inputText = 1;
+}
+
+message PingResponse {
+    string outputText = 1;
+}
+
+//Gossip
+message GossipRequest {
+    repeated int32 vector = 1;
+}
+
+message GossipResponse {
+    repeated GossipObservation observations = 1;
+}
+
+message GossipObservation {
+    string type = 1;
+    string identifier = 2;
+    google.protobuf.Timestamp dateHour = 3;
+    string cameraName = 4;
+    Coordinates coordinates = 5;
+    int32 replic = 6;
+    int32 seqN = 7;
+}
+
+//SpotterObservation
+message SpotterObservation {
+    string type = 1;
+    string identifier = 2;
+    google.protobuf.Timestamp dateHour = 3;
+    string cameraName = 4;
+    Coordinates coordinates = 5;
+}
+
+//Coordinates
+message Coordinates {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+//Service
+service Silo {
+    rpc camJoin(CamJoinRequest) returns (CamJoinResponse);
+    rpc camInfo (CamInfoRequest) returns (CamInfoResponse);
+    rpc report (ReportRequest) returns (ReportResponse);
+    rpc track (TrackRequest) returns (TrackResponse);
+    rpc trackMatch (TrackMatchRequest) returns (TrackMatchResponse);
+    rpc trace (TraceRequest) returns (TraceResponse);
+    rpc ping (PingRequest) returns (PingResponse);
+    rpc clear (ClearRequest) returns (ClearResponse);
+    rpc init (InitRequest) returns (InitResponse);
+    rpc gossip (GossipRequest) returns (GossipResponse);
+}
